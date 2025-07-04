@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,13 @@ export const Carousel = () => {
     }
     setIndex(dotIndex);
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prevIndex) => (prevIndex === 5 ? 1 : prevIndex + 1));
+    }, 5000);
+    return () => clearInterval(interval);
+  });
 
   return (
     <div className="w-full h-[400px] md:h-[600px] p-4 md:p-10 relative overflow-hidden">
