@@ -3,7 +3,11 @@ import { Section } from "../section";
 
 export const Month = () => {
   return (
-    <Section title="This Month" description="Best Selling Products">
+    <Section
+      title="This Month"
+      description="Best Selling Products"
+      variant="button"
+    >
       <div className="flex items-center gap-5">
         {[1, 2, 3, 4, 5].map((index) => (
           <ProductCard
@@ -11,7 +15,7 @@ export const Month = () => {
             name="Product Name"
             image=""
             price={125}
-            discount={100}
+            discount={0}
             ratings={4.5}
             totalRatings={100}
           />

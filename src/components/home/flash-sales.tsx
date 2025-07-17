@@ -26,9 +26,9 @@ export const FlashSales = () => {
               key={index}
               name="Product Name"
               image=""
-              price={125}
-              discount={100}
-              ratings={4.5}
+              price={100}
+              discount={0.4}
+              ratings={4}
               totalRatings={100}
             />
           ))}

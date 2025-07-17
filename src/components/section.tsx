@@ -72,7 +72,7 @@ export const Section = ({
               </Button>
             </>
           ) : (
-            <Button className="bg-red-400 hover:bg-red-500 cursor-pointer px-4 py-2">
+            <Button className="bg-red-400 hover:bg-red-500 cursor-pointer px-6 py-2">
               View All
             </Button>
           )}
