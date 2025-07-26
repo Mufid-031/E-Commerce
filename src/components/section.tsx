@@ -36,7 +36,7 @@ export const Section = ({
   return (
     <section
       className={cn(
-        "my-10 pl-5 lg:pl-20 px-5 lg:px-10 flex flex-col gap-10",
+        "md:my-10 md:pl-5 lg:pl-20 px-5 lg:px-10 flex flex-col gap-10",
         className
       )}
     >

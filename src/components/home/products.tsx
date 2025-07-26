@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 export const Products = () => {
   return (
     <Section title="Our Products" description="Explore Our Products">
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-5 overflow-x-auto">
         {Array.from({ length: 5 }).map((_, index) => (
           <ProductCard
             key={index}
@@ -18,7 +18,7 @@ export const Products = () => {
           />
         ))}
       </div>
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-5 overflow-x-auto">
         {Array.from({ length: 5 }).map((_, index) => (
           <ProductCard
             key={index}

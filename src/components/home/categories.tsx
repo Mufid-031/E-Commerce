@@ -38,11 +38,11 @@ export const Categories = () => {
 
   return (
     <Section title="Categories" description="Browse By Category">
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-5 overflow-x-auto">
         {items.map((item) => (
           <div
             key={item.name}
-            className="flex flex-col items-center justify-center gap-2 w-36 h-40 border border-slate-400 rounded-lg flex-1 hover:bg-red-400 hover:text-white cursor-pointer"
+            className="flex flex-col items-center justify-center gap-2 w-36 lg:flex-1 h-40 border border-slate-400 rounded-lg hover:bg-red-400 hover:text-white cursor-pointer"
           >
             {item.icon}
             <span className="text-sm font-semibold">{item.name}</span>

@@ -3,7 +3,9 @@ import {
   text,
   timestamp,
   boolean,
-  //   integer,
+  real,
+  integer,
+  bigserial,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
@@ -65,3 +67,128 @@ export const verification = pgTable("verification", {
     () => /* @__PURE__ */ new Date()
   ),
 });
+
+export const category = pgTable("category", {
+  id: bigserial({ mode: "number" }).primaryKey(),
+  name: text("name").notNull(),
+  discount: real("discount").default(0.0),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const product = pgTable("product", {
+  id: bigserial({ mode: "number" }).primaryKey(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  price: integer("price").notNull(),
+  discount: real("discount").default(0.0),
+  category: integer("category_id")
+    .references(() => category.id)
+    .notNull(),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const rating = pgTable("rating", {
+  id: bigserial({ mode: "number" }).primaryKey(),
+  user: integer("user_id")
+    .references(() => user.id)
+    .notNull(),
+  product: integer("product_id")
+    .references(() => product.id)
+    .notNull(),
+  rating: integer("rating").notNull(),
+  comment: text("comment").notNull(),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const like = pgTable("like", {
+  id: bigserial({ mode: "number" }).primaryKey(),
+  user: integer("user_id")
+    .references(() => user.id)
+    .notNull(),
+  product: integer("product_id")
+    .references(() => product.id)
+    .notNull(),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const order = pgTable("order", {
+  id: bigserial({ mode: "number" }).primaryKey(),
+  user: integer("user_id")
+    .references(() => user.id)
+    .notNull(),
+  product: integer("product_id")
+    .references(() => product.id)
+    .notNull(),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const cart = pgTable("cart", {
+  id: bigserial({ mode: "number" }).primaryKey(),
+  user: integer("user_id")
+    .references(() => user.id)
+    .notNull(),
+  product: integer("product_id")
+    .references(() => product.id)
+    .notNull(),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const wishlist = pgTable("wishlist", {
+  id: bigserial({ mode: "number" }).primaryKey(),
+  user: integer("user_id")
+    .references(() => user.id)
+    .notNull(),
+  product: integer("product_id")
+    .references(() => product.id)
+    .notNull(),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const schema = {
+  user,
+  session,
+  account,
+  verification,
+  category,
+  product,
+  rating,
+  like,
+  order,
+  cart,
+  wishlist,
+};

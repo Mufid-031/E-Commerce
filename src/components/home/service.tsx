@@ -2,7 +2,7 @@ import { Headphones, ShieldCheckIcon, TruckIcon } from "lucide-react";
 
 export const Service = () => {
   return (
-    <div className="flex justify-evenly items-center w-full h-96">
+    <div className="flex flex-col lg:flex-row justify-evenly items-center w-full py-20 gap-10">
       <div className="flex flex-col items-center">
         <div className="w-22 h-22 bg-neutral-300 flex justify-center items-center rounded-full">
           <div className="w-16 h-16 bg-accent-foreground rounded-full flex justify-center items-center">

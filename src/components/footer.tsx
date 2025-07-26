@@ -8,7 +8,7 @@ import { Input } from "./ui/input";
 
 export const Footer = () => {
   return (
-    <footer className="w-full h-96 p-10 bg-accent-foreground flex justify-evenly text-accent">
+    <footer className="w-full py-10 px-5 md:p-10 bg-accent-foreground flex md:justify-evenly gap-10 flex-wrap text-accent">
       <div>
         <h3 className="font-semibold text-2xl mb-5">Exclusive</h3>
         <h4 className="text-lg mb-5">Subscribe</h4>

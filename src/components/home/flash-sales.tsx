@@ -20,7 +20,7 @@ export const FlashSales = () => {
       countdown={{ days, hours, minutes, seconds }}
     >
       <div>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-5 overflow-x-auto">
           {[1, 2, 3, 4, 5].map((index) => (
             <ProductCard
               key={index}

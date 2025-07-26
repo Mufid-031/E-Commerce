@@ -8,7 +8,7 @@ export const Month = () => {
       description="Best Selling Products"
       variant="button"
     >
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-5 overflow-x-auto">
         {[1, 2, 3, 4, 5].map((index) => (
           <ProductCard
             key={index}
