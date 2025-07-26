@@ -3,24 +3,55 @@
 import { db } from "@/db/drizzle";
 import { category } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
+
+const categorySchema = z.object({
+  name: z.string(),
+  discount: z.number().optional(),
+});
+
+const updateCategorySchema = categorySchema.extend({ id: z.number() });
 
 export const addCategory = async ({
   name,
   discount = 0.0,
-}: {
-  name: string;
-  discount?: number;
-}) => {
+}: z.infer<typeof categorySchema>) => {
   try {
-    await db.insert(category).values({ name, discount });
+    const parsed = categorySchema.parse({ name, discount });
+
+    const existingCategory = await db
+      .select()
+      .from(category)
+      .where(eq(category.name, name));
+
+    if (existingCategory.length > 0) {
+      return {
+        status: 400,
+        success: false,
+        message: "Category already exists",
+      };
+    }
+
+    await db
+      .insert(category)
+      .values({ name: parsed.name, discount: parsed.discount });
 
     return {
-      status: 200,
+      status: 201,
       success: true,
       message: "Category added successfully",
     };
   } catch (error) {
     console.log(error);
+
+    if (error instanceof z.ZodError) {
+      return {
+        status: 400,
+        success: false,
+        message: "Validation error",
+        issues: error.issues.map((issue) => issue.message).join(", "),
+      };
+    }
 
     return {
       status: 500,
@@ -32,13 +63,13 @@ export const addCategory = async ({
 
 export const getCategories = async () => {
   try {
-    const categories = await db.select().from(category);
+    const results = await db.select().from(category).orderBy(category.id);
 
     return {
       status: 200,
       success: true,
       message: "Categories fetched successfully",
-      data: categories,
+      data: results,
     };
   } catch (error) {
     console.log(error);
@@ -51,19 +82,38 @@ export const getCategories = async () => {
   }
 };
 
+export const getCategory = async (id: number) => {
+  try {
+    const result = await db.select().from(category).where(eq(category.id, id));
+
+    return {
+      status: 200,
+      success: true,
+      message: "Category fetched successfully",
+      data: result,
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      status: 500,
+      success: false,
+      message: "Error getting category",
+    };
+  }
+};
+
 export const updateCategory = async ({
   id,
   name,
   discount,
-}: {
-  id: number;
-  name: string;
-  discount: number;
-}) => {
+}: z.infer<typeof updateCategorySchema>) => {
   try {
+    const parsed = updateCategorySchema.parse({ id, name, discount });
+
     await db
       .update(category)
-      .set({ name, discount })
+      .set({ name: parsed.name, discount: parsed.discount })
       .where(eq(category.id, id));
 
     return {
@@ -73,6 +123,15 @@ export const updateCategory = async ({
     };
   } catch (error) {
     console.log(error);
+
+    if (error instanceof z.ZodError) {
+      return {
+        status: 400,
+        success: false,
+        message: "Validation error",
+        issues: error.issues.map((issue) => issue.message).join(", "),
+      };
+    }
 
     return {
       status: 500,
