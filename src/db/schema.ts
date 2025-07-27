@@ -84,6 +84,7 @@ export const product = pgTable("product", {
   id: bigserial({ mode: "number" }).primaryKey(),
   name: text("name").notNull(),
   description: text("description").notNull(),
+  image: text("image").notNull(),
   price: integer("price").notNull(),
   discount: real("discount").default(0.0),
   category: integer("category_id")
@@ -99,7 +100,7 @@ export const product = pgTable("product", {
 
 export const rating = pgTable("rating", {
   id: bigserial({ mode: "number" }).primaryKey(),
-  user: integer("user_id")
+  user: text("user_id")
     .references(() => user.id)
     .notNull(),
   product: integer("product_id")
@@ -117,7 +118,7 @@ export const rating = pgTable("rating", {
 
 export const like = pgTable("like", {
   id: bigserial({ mode: "number" }).primaryKey(),
-  user: integer("user_id")
+  user: text("user_id")
     .references(() => user.id)
     .notNull(),
   product: integer("product_id")
@@ -133,7 +134,7 @@ export const like = pgTable("like", {
 
 export const order = pgTable("order", {
   id: bigserial({ mode: "number" }).primaryKey(),
-  user: integer("user_id")
+  user: text("user_id")
     .references(() => user.id)
     .notNull(),
   product: integer("product_id")
@@ -149,7 +150,7 @@ export const order = pgTable("order", {
 
 export const cart = pgTable("cart", {
   id: bigserial({ mode: "number" }).primaryKey(),
-  user: integer("user_id")
+  user: text("user_id")
     .references(() => user.id)
     .notNull(),
   product: integer("product_id")
@@ -165,7 +166,7 @@ export const cart = pgTable("cart", {
 
 export const wishlist = pgTable("wishlist", {
   id: bigserial({ mode: "number" }).primaryKey(),
-  user: integer("user_id")
+  user: text("user_id")
     .references(() => user.id)
     .notNull(),
   product: integer("product_id")

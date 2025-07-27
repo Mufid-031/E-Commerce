@@ -3,24 +3,51 @@
 import { db } from "@/db/drizzle";
 import { product } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
+import { v2 as cloudinary } from "cloudinary";
+
+const productSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  image: z.file(),
+  price: z.number(),
+  discount: z.number().optional(),
+  category: z.number(),
+});
+
+const updateProductSchema = productSchema.extend({ id: z.number() });
 
 export const addProduct = async ({
   name,
   description,
+  image,
   price,
   discount = 0.0,
   category,
-}: {
-  name: string;
-  description: string;
-  price: number;
-  discount?: number;
-  category: number;
-}) => {
+}: z.infer<typeof productSchema>) => {
   try {
-    await db
-      .insert(product)
-      .values({ name, description, price, discount, category });
+    const parsed = productSchema.parse({
+      name,
+      description,
+      image,
+      price,
+      discount,
+      category,
+    });
+
+    const signature = cloudinary.utils.api_sign_request(
+      image,
+      process.env.CLOUDINARY_API_SECRET as string
+    );
+
+    await db.insert(product).values({
+      name: parsed.name,
+      description: parsed.description,
+      image: signature,
+      price: parsed.price,
+      discount: parsed.discount,
+      category: parsed.category,
+    });
 
     return {
       status: 201,
@@ -29,6 +56,15 @@ export const addProduct = async ({
     };
   } catch (error) {
     console.log(error);
+
+    if (error instanceof z.ZodError) {
+      return {
+        status: 400,
+        success: false,
+        message: "Validation error",
+        issues: error.issues.map((issue) => issue.message).join(", "),
+      };
+    }
 
     return {
       status: 500,
@@ -63,21 +99,37 @@ export const updateProduct = async ({
   id,
   name,
   description,
+  image,
   price,
   discount,
   category,
-}: {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  discount: number;
-  category: number;
-}) => {
+}: z.infer<typeof updateProductSchema>) => {
   try {
+    const parsed = updateProductSchema.parse({
+      id,
+      name,
+      description,
+      image,
+      price,
+      discount,
+      category,
+    });
+
+    const signature = cloudinary.utils.api_sign_request(
+      image,
+      process.env.CLOUDINARY_API_SECRET as string
+    );
+
     await db
       .update(product)
-      .set({ name, description, price, discount, category })
+      .set({
+        name: parsed.name,
+        description: parsed.description,
+        image: signature,
+        price: parsed.price,
+        discount: parsed.discount,
+        category: parsed.category,
+      })
       .where(eq(product.id, id));
 
     return {
@@ -87,6 +139,15 @@ export const updateProduct = async ({
     };
   } catch (error) {
     console.log(error);
+
+    if (error instanceof z.ZodError) {
+      return {
+        status: 400,
+        success: false,
+        message: "Validation error",
+        issues: error.issues.map((issue) => issue.message).join(", "),
+      };
+    }
 
     return {
       status: 500,
