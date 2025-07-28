@@ -6,8 +6,8 @@ import { Separator } from "./ui/separator";
 
 interface SectionProps {
   title: string;
-  description: string;
   children: React.ReactNode;
+  description?: string;
   variant?: "carousel" | "button";
   hasCountdown?: boolean;
   countdown?: {
@@ -45,7 +45,11 @@ export const Section = ({
       </h4>
       <div className="flex lg:items-center justify-between">
         <div className="flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-10">
-          <h3 className="text-2xl lg:text-4xl font-semibold">{description}</h3>
+          {description && (
+            <h3 className="text-2xl lg:text-4xl font-semibold">
+              {description}
+            </h3>
+          )}
           {hasCountdown && (
             <ShowCounter
               days={days}

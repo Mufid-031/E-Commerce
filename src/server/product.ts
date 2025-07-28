@@ -2,9 +2,10 @@
 
 import { db } from "@/db/drizzle";
 import { product } from "@/db/schema";
+import cloudinary from "@/lib/cloudinary";
+import { UploadApiResponse } from "cloudinary";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { v2 as cloudinary } from "cloudinary";
 
 const productSchema = z.object({
   name: z.string(),
@@ -35,15 +36,30 @@ export const addProduct = async ({
       category,
     });
 
-    const signature = cloudinary.utils.api_sign_request(
-      image,
-      process.env.CLOUDINARY_API_SECRET as string
+    const arrayBuffer = await image.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const uploadResult: UploadApiResponse = await new Promise(
+      (resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: "products", },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result!);
+            }
+          }
+        );
+
+        uploadStream.end(buffer);
+      }
     );
 
     await db.insert(product).values({
       name: parsed.name,
       description: parsed.description,
-      image: signature,
+      image: uploadResult.secure_url,
       price: parsed.price,
       discount: parsed.discount,
       category: parsed.category,
